@@ -1,19 +1,23 @@
 import pyray as rl
 from raylib.colors import WHITE
 
-from app.displays import base
+from app.displays import startscreen, twodgame
 
 class Game:
     def __init__(self):
-        width, height = 800, 600
-        rl.init_window(width, height, "raylib template?")
-        self.base_display = base.BaseDisplay(self)
+        self.width, self.height = 800, 600
+        rl.init_window(self.width, self.height, "raylib template?")
+        self.base_display = startscreen.StartDisplay(self)
+        self.twodgame = twodgame.TwoDGameDisplay(self)
         self.current_display = self.base_display
 
 
+    def change_display(self, display):
+        self.current_display = display
+
     def loop(self):
         while not rl.window_should_close():
-            self.current_display.update()
+            self.update()
             self.render()
 
     def render(self):
