@@ -1,7 +1,8 @@
 import pyray as rl
 from raylib.colors import WHITE
 
-from app.displays import startscreen, twodgame
+from app.displays import startscreen, twodgame, threedgame
+
 
 class Game:
     def __init__(self):
@@ -9,6 +10,7 @@ class Game:
         rl.init_window(self.width, self.height, "raylib template?")
         self.base_display = startscreen.StartDisplay(self)
         self.twodgame = twodgame.TwoDGameDisplay(self)
+        self.threedgame = threedgame.ThreeDGameDisplay(self)
         self.current_display = self.base_display
 
 

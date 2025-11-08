@@ -1,6 +1,7 @@
 import pyray as rl
 from app.displays.base import BaseDisplay
-from app import camera
+from app.cameras import twodcamera
+
 
 class TwoDGameDisplay(BaseDisplay):
     def __init__(self, game):
@@ -8,7 +9,7 @@ class TwoDGameDisplay(BaseDisplay):
         self.square_pos = [200, 200]
         self.speed = 200
         self.delta_time = rl.get_frame_time()
-        self.camera = camera.Camera(self.game.width, self.game.height, self.square_pos[0], self.square_pos[1], 3)
+        self.camera = twodcamera.Camera(self.game.width, self.game.height, self.square_pos[0], self.square_pos[1], 3)
 
     def render(self):
         self.camera.begin_mode()
