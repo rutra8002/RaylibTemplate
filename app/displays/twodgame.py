@@ -48,6 +48,7 @@ class TwoDGameDisplay(BaseDisplay):
 
         rl.end_shader_mode()
 
+        rl.draw_text(f"Gamepad X: {rl.get_gamepad_axis_movement(self.game.gamepad_id, rl.GamepadAxis.GAMEPAD_AXIS_LEFT_X):.2f}  Y: {rl.get_gamepad_axis_movement(self.game.gamepad_id, rl.GamepadAxis.GAMEPAD_AXIS_LEFT_Y):.2f}", 10, 130, 20, rl.YELLOW)
 
 
     def update(self):
@@ -58,12 +59,26 @@ class TwoDGameDisplay(BaseDisplay):
         rl.set_shader_value(self.bloom_shader, self.shader_time_location, t,
                             rl.ShaderUniformDataType.SHADER_UNIFORM_FLOAT)
 
+        if not self.game.gamepad_enabled:
+            if rl.is_key_down(rl.KeyboardKey.KEY_W):
+                self.square_pos[1] -= self.speed * self.delta_time
+            if rl.is_key_down(rl.KeyboardKey.KEY_S):
+                self.square_pos[1] += self.speed * self.delta_time
+            if rl.is_key_down(rl.KeyboardKey.KEY_A):
+                self.square_pos[0] -= self.speed * self.delta_time
+            if rl.is_key_down(rl.KeyboardKey.KEY_D):
+                self.square_pos[0] += self.speed * self.delta_time
+        else:
+            ax = rl.get_gamepad_axis_movement(self.game.gamepad_id, rl.GamepadAxis.GAMEPAD_AXIS_LEFT_X)
+            ay = rl.get_gamepad_axis_movement(self.game.gamepad_id, rl.GamepadAxis.GAMEPAD_AXIS_LEFT_Y)
 
-        if rl.is_key_down(rl.KeyboardKey.KEY_W):
-            self.square_pos[1] -= self.speed * self.delta_time
-        if rl.is_key_down(rl.KeyboardKey.KEY_S):
-            self.square_pos[1] += self.speed * self.delta_time
-        if rl.is_key_down(rl.KeyboardKey.KEY_A):
-            self.square_pos[0] -= self.speed * self.delta_time
-        if rl.is_key_down(rl.KeyboardKey.KEY_D):
-            self.square_pos[0] += self.speed * self.delta_time
+            # Deadzone
+            if abs(ax) < self.game.gamepad_deadzone:
+                ax = 0.0
+            if abs(ay) < self.game.gamepad_deadzone:
+                ay = 0.0
+
+            self.square_pos[0] += ax * self.speed * self.delta_time
+            self.square_pos[1] += ay * self.speed * self.delta_time
+
+

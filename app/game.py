@@ -13,6 +13,14 @@ class Game:
         self.threedgame = threedgame.ThreeDGameDisplay(self)
         self.current_display = self.base_display
 
+        # controller
+        self.gamepad_id = 0
+        self.gamepad_deadzone = 0.25
+        self.gamepad_enabled = False
+
+    def update_gamepad_status(self):
+        # Detect availability each frame (hot-plug support)
+        self.gamepad_enabled = rl.is_gamepad_available(self.gamepad_id)
 
     def change_display(self, display):
         self.current_display = display
@@ -30,5 +38,6 @@ class Game:
         rl.end_drawing()
 
     def update(self):
+        self.update_gamepad_status()
         self.current_display.update()
 
