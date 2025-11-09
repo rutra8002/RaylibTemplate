@@ -9,6 +9,7 @@ class StartDisplay(BaseDisplay):
         self.button_to_3dgame = button.Button(400, 100, 100, 100, "click to enter 3dgame", 20, rl.WHITE, rl.GRAY, rl.GREEN, rl.RED)
 
     def render(self):
+        super().render()
         rl.draw_fps(10, 10)
         self.button_to_2dgame.draw()
         self.button_to_3dgame.draw()

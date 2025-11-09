@@ -7,6 +7,7 @@ class Game:
     def __init__(self):
         self.width, self.height = 800, 600
         rl.init_window(self.width, self.height, "raylib template?")
+        self.bloom_shader = rl.load_shader("", "app/shaders/bloom.fs")
         self.base_display = startscreen.StartDisplay(self)
         self.twodgame = twodgame.TwoDGameDisplay(self)
         self.threedgame = threedgame.ThreeDGameDisplay(self)
@@ -23,7 +24,6 @@ class Game:
 
     def render(self):
         rl.begin_drawing()
-        rl.clear_background(rl.BLACK)
         self.current_display.render()
         #debug thingy
         rl.draw_text(str(self.current_display), 10, 100, 20, rl.WHITE)

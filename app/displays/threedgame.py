@@ -19,7 +19,7 @@ class ThreeDGameDisplay(BaseDisplay):
         self.texture =  rl.load_render_texture(game.width, game.height)
         rl.set_texture_filter(self.texture.texture, rl.TextureFilter.TEXTURE_FILTER_BILINEAR)
 
-        self.bloom_shader = rl.load_shader("", "app/shaders/bloom.fs")
+        self.bloom_shader = self.game.bloom_shader
         self.shader_resolution_location = rl.get_shader_location(self.bloom_shader, "resolution")
         self.shader_time_location = rl.get_shader_location(self.bloom_shader, "time")
 
@@ -48,9 +48,10 @@ class ThreeDGameDisplay(BaseDisplay):
     def render(self):
         rl.begin_texture_mode(self.texture)
 
-        rl.clear_background(rl.BLACK)
+        super().render()
 
         self.camera.begin_mode()
+
         rl.draw_grid(40, 1.0)
         pos = rl.Vector3(self.cube_pos[0], self.cube_pos[1], self.cube_pos[2])
         rl.draw_cube(pos, 1.0, 1.0, 1.0, rl.RED)

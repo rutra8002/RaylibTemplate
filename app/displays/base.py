@@ -7,7 +7,7 @@ class BaseDisplay:
         return self.__class__.__name__
 
     def render(self):
-        rl.draw_fps(10, 10)
+        rl.clear_background(rl.BLACK)
 
     def update(self):
         pass

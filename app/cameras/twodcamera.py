@@ -19,7 +19,7 @@ class Camera:
         self.camera.target.x += (target_x - self.camera.target.x) * self.smooth_factor * delta_time
         self.camera.target.y += (target_y - self.camera.target.y) * self.smooth_factor * delta_time
 
-    def adjust_zoom(self, player_speed, delta_time):
+    def adjust_zoom(self, delta_time):
         self.target_zoom = self.calculate_target_zoom(self.camera.offset.x * 2, self.camera.offset.y * 2)
         self.camera.zoom += (self.target_zoom - self.camera.zoom) * self.smooth_factor * delta_time
 
