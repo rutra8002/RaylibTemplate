@@ -7,6 +7,7 @@ class Game:
     def __init__(self):
         self.width, self.height = 800, 600
         rl.init_window(self.width, self.height, "raylib template?")
+        rl.set_exit_key(rl.KeyboardKey.KEY_NULL)
         self.bloom_shader = rl.load_shader("", "app/shaders/bloom.fs")
         self.base_display = startscreen.StartDisplay(self)
         self.twodgame = twodgame.TwoDGameDisplay(self)
