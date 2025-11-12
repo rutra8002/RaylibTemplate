@@ -1,3 +1,6 @@
+# python
+# file: `app/displays/threedgame.py`
+import math
 import pyray as rl
 from app.displays.base import BaseDisplay
 from app.cameras import threedcamera
@@ -8,9 +11,22 @@ class ThreeDGameDisplay(BaseDisplay):
         super().__init__(game)
         self.cube_pos = [0.0, 1.0, 0.0]
         self.speed = 10
+
+        self.camera_height = 6.0
+        self.camera_distance = 8.0
+        self.camera_distance_min = 5.0
+        self.camera_distance_max = 12.0
+        self.camera_pitch_deg = 10.0
+        self.pitch_min = -60.0
+        self.pitch_max = 60.0
+        self.pitch_sensitivity = 0.15
+
+        # sensitivity for gamepad right stick (degrees per second)
+        self.gamepad_look_sensitivity = 120.0
+
         self.camera = threedcamera.Camera(
             self.cube_pos[0], self.cube_pos[1], self.cube_pos[2],
-            (0, 6, 8),
+            (0.0, self.camera_height, self.camera_distance),
             3.0,
             60.0
         )
@@ -21,8 +37,9 @@ class ThreeDGameDisplay(BaseDisplay):
         self.model_scale = rl.Vector3(2.0, 2.0, 2.0)
         self.model_rot_axis = rl.Vector3(0.0, 1.0, 0.0)
         self.model_rot_deg = 0.0
+        self.mouse_sensitivity = 0.2
 
-        self.texture =  rl.load_render_texture(game.width, game.height)
+        self.texture = rl.load_render_texture(game.width, game.height)
         rl.set_texture_filter(self.texture.texture, rl.TextureFilter.TEXTURE_FILTER_BILINEAR)
 
         self.bloom_shader = self.game.bloom_shader
@@ -33,26 +50,90 @@ class ThreeDGameDisplay(BaseDisplay):
         rl.set_shader_value(self.bloom_shader, self.shader_resolution_location, res,
                             rl.ShaderUniformDataType.SHADER_UNIFORM_VEC2)
 
+        self.hidden_cursor = False
+
+    def __del__(self):
+        rl.show_cursor()
 
     def update(self):
+        if not self.hidden_cursor:
+            if not rl.is_cursor_hidden():
+                rl.hide_cursor()
+                rl.disable_cursor()
+                self.hidden_cursor = True
         self.delta_time = rl.get_frame_time()
+
+        # Look input: mouse when not in gamepad mode, right stick when in gamepad mode
+        if not self.game.gamepad_enabled:
+            mouse_delta = rl.get_mouse_delta()
+            # Rotate model by mouse X (yaw around Y)
+            self.model_rot_deg = (self.model_rot_deg - mouse_delta.x * self.mouse_sensitivity) % 360.0
+
+            # Orbit camera by mouse Y (pitch, clamped)
+            self.camera_pitch_deg = max(
+                self.pitch_min,
+                min(self.pitch_max, self.camera_pitch_deg - mouse_delta.y * self.pitch_sensitivity)
+            )
+        else:
+            # Use right joystick for look (use game's attributes directly)
+            rx = self.game.right_joystick_x
+            ry = self.game.right_joystick_y
+            look_scale = self.gamepad_look_sensitivity * self.delta_time
+
+            # Yaw
+            self.model_rot_deg = (self.model_rot_deg - rx * look_scale) % 360.0
+            # Pitch (clamped)
+            self.camera_pitch_deg = max(
+                self.pitch_min,
+                min(self.pitch_max, self.camera_pitch_deg - ry * look_scale)
+            )
+
+        yaw_rad = math.radians(self.model_rot_deg)
+        fx, fz = math.sin(yaw_rad), math.cos(yaw_rad)
+        rx, rz = fz, -math.sin(yaw_rad)
+
+        move_x = 0.0
+        move_z = 0.0
+        if not self.game.gamepad_enabled:
+            if rl.is_key_down(rl.KeyboardKey.KEY_W):
+                move_x += fx
+                move_z += fz
+            if rl.is_key_down(rl.KeyboardKey.KEY_S):
+                move_x -= fx
+                move_z -= fz
+            if rl.is_key_down(rl.KeyboardKey.KEY_A):
+                move_x += rx
+                move_z += rz
+            if rl.is_key_down(rl.KeyboardKey.KEY_D):
+                move_x -= rx
+                move_z -= rz
+        else:
+            # Joystick X moves along right, Y along forward
+            move_x -= rx * self.game.left_joystick_x + fx * self.game.left_joystick_y
+            move_z -= rz * self.game.left_joystick_x + fz * self.game.left_joystick_y
+
+        mag = math.hypot(move_x, move_z)
+        if mag > 0.0:
+            move_x /= mag
+            move_z /= mag
+            self.cube_pos[0] += move_x * self.speed * self.delta_time
+            self.cube_pos[2] += move_z * self.speed * self.delta_time
+
+        t = (self.camera_pitch_deg - self.pitch_min) / (self.pitch_max - self.pitch_min)
+        t = max(0.0, min(1.0, t))
+        dynamic_dist = self.camera_distance_max * (1.0 - t) + self.camera_distance_min * t
+
+        pitch_rad = math.radians(self.camera_pitch_deg)
+        horiz_dist = dynamic_dist * math.cos(pitch_rad)
+        y_off = self.camera_height + dynamic_dist * math.sin(pitch_rad)
+        cam_off = rl.Vector3(-fx * horiz_dist, y_off, -fz * horiz_dist)
+        self.camera.offset = cam_off
+
         self.camera.update_target(self.cube_pos[0], self.cube_pos[1], self.cube_pos[2], self.delta_time)
 
         t = rl.ffi.new("float *", float(rl.get_time()))
         rl.set_shader_value(self.bloom_shader, self.shader_time_location, t,
                             rl.ShaderUniformDataType.SHADER_UNIFORM_FLOAT)
-        if not self.game.gamepad_enabled:
-            if rl.is_key_down(rl.KeyboardKey.KEY_W):
-                self.cube_pos[2] -= self.speed * self.delta_time
-            if rl.is_key_down(rl.KeyboardKey.KEY_S):
-                self.cube_pos[2] += self.speed * self.delta_time
-            if rl.is_key_down(rl.KeyboardKey.KEY_A):
-                self.cube_pos[0] -= self.speed * self.delta_time
-            if rl.is_key_down(rl.KeyboardKey.KEY_D):
-                self.cube_pos[0] += self.speed * self.delta_time
-        else:
-            self.cube_pos[0] += self.game.left_joystick_x * self.speed * self.delta_time
-            self.cube_pos[2] += self.game.left_joystick_y * self.speed * self.delta_time
 
     def render(self):
         rl.begin_texture_mode(self.texture)
