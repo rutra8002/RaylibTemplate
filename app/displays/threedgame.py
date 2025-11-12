@@ -16,6 +16,12 @@ class ThreeDGameDisplay(BaseDisplay):
         )
         self.delta_time = 0
 
+        self.model = rl.load_model("app/models/shiba/scene.gltf")
+
+        self.model_scale = rl.Vector3(2.0, 2.0, 2.0)
+        self.model_rot_axis = rl.Vector3(0.0, 1.0, 0.0)
+        self.model_rot_deg = 0.0
+
         self.texture =  rl.load_render_texture(game.width, game.height)
         rl.set_texture_filter(self.texture.texture, rl.TextureFilter.TEXTURE_FILTER_BILINEAR)
 
@@ -57,8 +63,14 @@ class ThreeDGameDisplay(BaseDisplay):
 
         rl.draw_grid(40, 1.0)
         pos = rl.Vector3(self.cube_pos[0], self.cube_pos[1], self.cube_pos[2])
-        rl.draw_cube(pos, 1.0, 1.0, 1.0, rl.RED)
-        rl.draw_cube_wires(pos, 1.0, 1.0, 1.0, rl.BLACK)
+        rl.draw_model_ex(
+            self.model,
+            pos,
+            self.model_rot_axis,
+            self.model_rot_deg,
+            self.model_scale,
+            rl.WHITE
+        )
 
         self.camera.end_mode()
 
