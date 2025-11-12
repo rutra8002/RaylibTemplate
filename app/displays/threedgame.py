@@ -53,12 +53,10 @@ class ThreeDGameDisplay(BaseDisplay):
         self.hidden_cursor = False
 
     def __del__(self):
-        rl.show_cursor()
+        rl.enable_cursor()
 
     def update(self):
         if not self.hidden_cursor:
-            if not rl.is_cursor_hidden():
-                rl.hide_cursor()
                 rl.disable_cursor()
                 self.hidden_cursor = True
         self.delta_time = rl.get_frame_time()
