@@ -56,40 +56,42 @@ class ThreeDGameDisplay(BaseDisplay):
         rl.enable_cursor()
 
     def update(self):
-        if not self.hidden_cursor:
-                rl.disable_cursor()
-                self.hidden_cursor = True
+        self.update_cursor()
         self.delta_time = rl.get_frame_time()
+        self.update_look()
+        yaw_rad = math.radians(self.model_rot_deg)
+        fx, fz = math.sin(yaw_rad), math.cos(yaw_rad)
+        rx, rz = fz, -math.sin(yaw_rad)
+        self.update_movement(fx, fz, rx, rz)
+        self.update_camera(fx, fz)
+        self.update_shader_time()
 
-        # Look input: mouse when not in gamepad mode, right stick when in gamepad mode
+    def update_cursor(self):
+        if not self.hidden_cursor:
+            rl.disable_cursor()
+            self.hidden_cursor = True
+
+    def update_look(self):
         if not self.game.gamepad_enabled:
             mouse_delta = rl.get_mouse_delta()
-            # Rotate model by mouse X (yaw around Y)
             self.model_rot_deg = (self.model_rot_deg - mouse_delta.x * self.mouse_sensitivity) % 360.0
 
-            # Orbit camera by mouse Y (pitch, clamped)
             self.camera_pitch_deg = max(
                 self.pitch_min,
                 min(self.pitch_max, self.camera_pitch_deg - mouse_delta.y * self.pitch_sensitivity)
             )
         else:
-            # Use right joystick for look (use game's attributes directly)
             rx = self.game.right_joystick_x
             ry = self.game.right_joystick_y
             look_scale = self.gamepad_look_sensitivity * self.delta_time
 
-            # Yaw
             self.model_rot_deg = (self.model_rot_deg - rx * look_scale) % 360.0
-            # Pitch (clamped)
             self.camera_pitch_deg = max(
                 self.pitch_min,
                 min(self.pitch_max, self.camera_pitch_deg - ry * look_scale)
             )
 
-        yaw_rad = math.radians(self.model_rot_deg)
-        fx, fz = math.sin(yaw_rad), math.cos(yaw_rad)
-        rx, rz = fz, -math.sin(yaw_rad)
-
+    def update_movement(self, fx, fz, rx, rz):
         move_x = 0.0
         move_z = 0.0
         if not self.game.gamepad_enabled:
@@ -117,6 +119,7 @@ class ThreeDGameDisplay(BaseDisplay):
             self.cube_pos[0] += move_x * self.speed * self.delta_time
             self.cube_pos[2] += move_z * self.speed * self.delta_time
 
+    def update_camera(self, fx, fz):
         t = (self.camera_pitch_deg - self.pitch_min) / (self.pitch_max - self.pitch_min)
         t = max(0.0, min(1.0, t))
         dynamic_dist = self.camera_distance_max * (1.0 - t) + self.camera_distance_min * t
@@ -129,6 +132,7 @@ class ThreeDGameDisplay(BaseDisplay):
 
         self.camera.update_target(self.cube_pos[0], self.cube_pos[1], self.cube_pos[2], self.delta_time)
 
+    def update_shader_time(self):
         t = rl.ffi.new("float *", float(rl.get_time()))
         rl.set_shader_value(self.bloom_shader, self.shader_time_location, t,
                             rl.ShaderUniformDataType.SHADER_UNIFORM_FLOAT)
