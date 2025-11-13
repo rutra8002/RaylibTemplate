@@ -13,9 +13,9 @@ class ThreeDGameDisplay(BaseDisplay):
         self.speed = 10
 
         self.camera_height = 6.0
-        self.camera_distance = 8.0
-        self.camera_distance_min = 5.0
-        self.camera_distance_max = 12.0
+        self.camera_distance = 10.0
+        self.camera_distance_min = 6.0
+        self.camera_distance_max = 16.0
         self.camera_pitch_deg = 10.0
         self.pitch_min = -60.0
         self.pitch_max = 60.0
