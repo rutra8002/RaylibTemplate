@@ -1,5 +1,6 @@
 import pyray as rl
-from app.displays import BaseDisplay, SettingsDisplay
+from app.displays.base import BaseDisplay
+from app.displays.settings import SettingsDisplay
 from app.ui import button, menu
 from app.managers import KeyboardAction
 

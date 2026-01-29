@@ -1,7 +1,8 @@
 import math
 import pyray as rl
 from app.cameras import threedcamera
-from app.displays import BaseDisplay, PauseDisplay
+from app.displays.base import BaseDisplay
+from app.displays.pause import PauseDisplay
 from app.managers import KeyboardAction
 
 

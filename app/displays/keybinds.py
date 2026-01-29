@@ -1,5 +1,5 @@
 import pyray as rl
-from app.displays import BaseDisplay
+from app.displays.base import BaseDisplay
 from app.ui import button, menu
 
 
