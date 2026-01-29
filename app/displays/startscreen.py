@@ -1,8 +1,6 @@
 import pyray as rl
-from app.displays.base import BaseDisplay
-from app.displays.settings import SettingsDisplay
-from app.ui import button
-from app.ui import menu
+from app.displays import BaseDisplay, SettingsDisplay
+from app.ui import button, menu
 class StartDisplay(BaseDisplay):
 
     def __init__(self, game):

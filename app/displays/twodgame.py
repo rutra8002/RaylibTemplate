@@ -1,7 +1,6 @@
 import pyray as rl
-from app.displays.base import BaseDisplay
+from app.displays import BaseDisplay, PauseDisplay
 from app.cameras import twodcamera
-from app.displays.pause import PauseDisplay
 from app.managers import KeyboardAction
 
 

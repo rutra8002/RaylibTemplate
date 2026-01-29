@@ -1,9 +1,6 @@
 import pyray as rl
-from app.displays.base import BaseDisplay
-from app.displays.keybinds import KeybindsDisplay
-from app.displays.audio import AudioDisplay
-from app.ui import button
-from app.ui import menu
+from app.displays import BaseDisplay, KeybindsDisplay, AudioDisplay
+from app.ui import button, menu
 
 
 class SettingsDisplay(BaseDisplay):

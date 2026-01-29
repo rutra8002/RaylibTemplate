@@ -1,6 +1,6 @@
 import pyray as rl
 
-from app.displays import startscreen, twodgame, threedgame
+from app.displays import StartDisplay, TwoDGameDisplay, ThreeDGameDisplay
 from app.managers import KeyboardManager, KeyboardAction, AudioManager, ShaderManager, ModelManager, TextureManager
 
 
@@ -18,9 +18,9 @@ class Game:
 
         self.bloom_shader = self.shader_manager.get_shader(self.shader_manager.ShaderId.BLOOM)
 
-        self.base_display = startscreen.StartDisplay(self)
-        self.twodgame = twodgame.TwoDGameDisplay(self)
-        self.threedgame = threedgame.ThreeDGameDisplay(self)
+        self.base_display = StartDisplay(self)
+        self.twodgame = TwoDGameDisplay(self)
+        self.threedgame = ThreeDGameDisplay(self)
         self.current_display = self.base_display
         self.current_display.on_enter()
         self.debug_enabled = False

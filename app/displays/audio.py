@@ -1,8 +1,6 @@
 import pyray as rl
-from app.displays.base import BaseDisplay
-from app.ui import button
-from app.ui import menu
-from app.ui import slider
+from app.displays import BaseDisplay
+from app.ui import button, menu, slider
 
 
 class AudioDisplay(BaseDisplay):

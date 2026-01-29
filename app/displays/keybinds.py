@@ -1,7 +1,6 @@
 import pyray as rl
-from app.displays.base import BaseDisplay
-from app.ui import button
-from app.ui import menu
+from app.displays import BaseDisplay
+from app.ui import button, menu
 
 
 class KeybindsDisplay(BaseDisplay):
