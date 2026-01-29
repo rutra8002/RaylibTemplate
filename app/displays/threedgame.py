@@ -12,10 +12,7 @@ class ThreeDGameDisplay(BaseDisplay):
         self.cube_pos = [0.0, 1.0, 0.0]
         self.speed = 10
 
-        self.camera_height = 6.0
         self.camera_distance = 10.0
-        self.camera_distance_min = 6.0
-        self.camera_distance_max = 16.0
         self.camera_pitch_deg = 10.0
         self.pitch_min = -60.0
         self.pitch_max = 60.0
@@ -26,7 +23,7 @@ class ThreeDGameDisplay(BaseDisplay):
 
         self.camera = threedcamera.Camera(
             self.cube_pos[0], self.cube_pos[1], self.cube_pos[2],
-            (0.0, self.camera_height, self.camera_distance),
+            (0.0, 0.0, self.camera_distance),
             3.0,
             60.0
         )
@@ -130,13 +127,9 @@ class ThreeDGameDisplay(BaseDisplay):
             self.cube_pos[2] += move_z * self.speed * self.delta_time
 
     def update_camera(self, fx, fz):
-        t = (self.camera_pitch_deg - self.pitch_min) / (self.pitch_max - self.pitch_min)
-        t = max(0.0, min(1.0, t))
-        dynamic_dist = self.camera_distance_max * (1.0 - t) + self.camera_distance_min * t
-
         pitch_rad = math.radians(self.camera_pitch_deg)
-        horiz_dist = dynamic_dist * math.cos(pitch_rad)
-        y_off = self.camera_height + dynamic_dist * math.sin(pitch_rad)
+        horiz_dist = self.camera_distance * math.cos(pitch_rad)
+        y_off = self.camera_distance * math.sin(pitch_rad)
         cam_off = rl.Vector3(-fx * horiz_dist, y_off, -fz * horiz_dist)
         self.camera.offset = cam_off
 
