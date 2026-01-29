@@ -55,6 +55,12 @@ class ThreeDGameDisplay(BaseDisplay):
     def __del__(self):
         rl.enable_cursor()
 
+    def on_enter(self):
+        self.game.audio.play_music_id(self.game.audio.AudioId.DOOM, looping=True)
+
+    def on_exit(self):
+        self.game.audio.pause_music()
+
     def update(self):
         if self.game.keyboard.is_pressed(KeyboardAction.PAUSE):
             self.game.change_display(PauseDisplay(self.game, self))

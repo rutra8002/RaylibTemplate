@@ -77,3 +77,9 @@ class TwoDGameDisplay(BaseDisplay):
         else:
             self.square_pos[0] += self.game.left_joystick_x * self.speed * self.delta_time
             self.square_pos[1] += self.game.left_joystick_y * self.speed * self.delta_time
+
+    def on_enter(self):
+        self.game.audio.play_music_id(self.game.audio.AudioId.DOOM, looping=True)
+
+    def on_exit(self):
+        self.game.audio.pause_music()

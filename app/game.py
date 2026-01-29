@@ -2,6 +2,7 @@ import pyray as rl
 
 from app.displays import startscreen, twodgame, threedgame
 from app.input.keyboard import KeyboardManager
+from app.audio_manager import AudioManager
 
 
 class Game:
@@ -9,11 +10,14 @@ class Game:
         self.width, self.height = 800, 600
         rl.init_window(self.width, self.height, "raylib template?")
         rl.set_exit_key(rl.KeyboardKey.KEY_NULL)
+        rl.init_audio_device()
+        self.audio = AudioManager()
         self.bloom_shader = rl.load_shader("", "app/shaders/bloom.fs")
         self.base_display = startscreen.StartDisplay(self)
         self.twodgame = twodgame.TwoDGameDisplay(self)
         self.threedgame = threedgame.ThreeDGameDisplay(self)
         self.current_display = self.base_display
+        self.current_display.on_enter()
 
         self.keyboard = KeyboardManager()
 
@@ -34,12 +38,17 @@ class Game:
         self.gamepad_enabled = available and not is_blacklisted
 
     def change_display(self, display):
+        if self.current_display is not None:
+            self.current_display.on_exit()
         self.current_display = display
+        self.current_display.on_enter()
 
     def loop(self):
         while not rl.window_should_close():
             self.update()
             self.render()
+        self.audio.shutdown()
+        rl.close_window()
 
     def render(self):
         rl.begin_drawing()
@@ -52,6 +61,7 @@ class Game:
         self.update_gamepad_status()
         self.update_joystick()
         self.keyboard.update()
+        self.audio.update()
         self.current_display.update()
 
     def update_joystick(self):
