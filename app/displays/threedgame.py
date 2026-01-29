@@ -29,7 +29,7 @@ class ThreeDGameDisplay(BaseDisplay):
         )
         self.delta_time = 0
 
-        self.model = rl.load_model("app/models/shiba/scene.gltf")
+        self.model = rl.load_model("app/assets/models/shiba/scene.gltf")
 
         self.model_scale = rl.Vector3(2.0, 2.0, 2.0)
         self.model_rot_axis = rl.Vector3(0.0, 1.0, 0.0)

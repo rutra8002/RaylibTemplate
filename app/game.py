@@ -12,7 +12,7 @@ class Game:
         rl.set_exit_key(rl.KeyboardKey.KEY_NULL)
         rl.init_audio_device()
         self.audio = AudioManager()
-        self.bloom_shader = rl.load_shader("", "app/shaders/bloom.fs")
+        self.bloom_shader = rl.load_shader("", "app/assets/shaders/bloom.fs")
         self.base_display = startscreen.StartDisplay(self)
         self.twodgame = twodgame.TwoDGameDisplay(self)
         self.threedgame = threedgame.ThreeDGameDisplay(self)
