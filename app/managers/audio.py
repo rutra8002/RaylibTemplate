@@ -1,5 +1,5 @@
 import pyray as rl
-from enum import Enum
+from enum import IntEnum, auto
 from pathlib import Path
 import re
 
@@ -50,10 +50,13 @@ class AudioManager:
                     key = f"{base}_{i}"
                     i += 1
                 entries[key] = path
+
         if not entries:
-            audio_enum = Enum("AudioId", {"NONE": 0})
+            audio_enum = IntEnum("AudioId", {"NONE": auto()})
             return audio_enum, {}
-        audio_enum = Enum("AudioId", {name: name for name in entries})
+
+        members = {"NONE": auto(), **{name: auto() for name in entries}}
+        audio_enum = IntEnum("AudioId", members)
         id_to_path = {audio_enum[name]: path for name, path in entries.items()}
         return audio_enum, id_to_path
 

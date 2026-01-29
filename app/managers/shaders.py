@@ -1,5 +1,5 @@
 import pyray as rl
-from enum import Enum
+from enum import IntEnum, auto
 from pathlib import Path
 import re
 
@@ -22,7 +22,7 @@ class ShaderManager:
         return key
 
     def _build_enum(self):
-        entries = {} # name -> {vs: path, fs: path}
+        entries = {}  # name -> {vs: path, fs: path}
         if self.assets_dir.exists():
             for path in sorted(self.assets_dir.iterdir()):
                 if not path.is_file():
@@ -53,10 +53,11 @@ class ShaderManager:
             final_entries[key] = paths
 
         if not final_entries:
-            shader_enum = Enum("ShaderId", {"NONE": 0})
+            shader_enum = IntEnum("ShaderId", {"NONE": auto()})
             return shader_enum, {}
 
-        shader_enum = Enum("ShaderId", {name: name for name in final_entries})
+        members = {"NONE": auto(), **{name: auto() for name in final_entries}}
+        shader_enum = IntEnum("ShaderId", members)
         id_to_paths = {shader_enum[name]: paths for name, paths in final_entries.items()}
         return shader_enum, id_to_paths
 

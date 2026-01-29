@@ -1,5 +1,5 @@
 import pyray as rl
-from enum import Enum
+from enum import IntEnum, auto
 from pathlib import Path
 import re
 
@@ -42,10 +42,11 @@ class ModelManager:
                         self._add_entry(entries, key, found_model)
 
         if not entries:
-            model_enum = Enum("ModelId", {"NONE": 0})
+            model_enum = IntEnum("ModelId", {"NONE": auto()})
             return model_enum, {}
 
-        model_enum = Enum("ModelId", {name: name for name in entries})
+        members = {"NONE": auto(), **{name: auto() for name in entries}}
+        model_enum = IntEnum("ModelId", members)
         id_to_path = {model_enum[name]: path for name, path in entries.items()}
         return model_enum, id_to_path
 

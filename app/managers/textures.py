@@ -1,5 +1,5 @@
 import pyray as rl
-from enum import Enum
+from enum import IntEnum, auto
 from pathlib import Path
 import re
 
@@ -33,10 +33,11 @@ class TextureManager:
                 self._add_entry(entries, key, path)
 
         if not entries:
-            texture_enum = Enum("TextureId", {"NONE": 0})
+            texture_enum = IntEnum("TextureId", {"NONE": auto()})
             return texture_enum, {}
 
-        texture_enum = Enum("TextureId", {name: name for name in entries})
+        members = {"NONE": auto(), **{name: auto() for name in entries}}
+        texture_enum = IntEnum("TextureId", members)
         id_to_path = {texture_enum[name]: path for name, path in entries.items()}
         return texture_enum, id_to_path
 
