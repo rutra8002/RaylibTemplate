@@ -3,6 +3,7 @@ import pyray as rl
 from app.displays.base import BaseDisplay
 from app.cameras import threedcamera
 from app.displays.pause import PauseDisplay
+from app.input import KeyboardAction
 
 
 class ThreeDGameDisplay(BaseDisplay):
@@ -55,7 +56,7 @@ class ThreeDGameDisplay(BaseDisplay):
         rl.enable_cursor()
 
     def update(self):
-        if rl.is_key_pressed(rl.KeyboardKey.KEY_ESCAPE):
+        if self.game.keyboard.is_pressed(KeyboardAction.PAUSE):
             self.game.change_display(PauseDisplay(self.game, self))
             return
 
@@ -98,16 +99,16 @@ class ThreeDGameDisplay(BaseDisplay):
         move_x = 0.0
         move_z = 0.0
         if not self.game.gamepad_enabled:
-            if rl.is_key_down(rl.KeyboardKey.KEY_W):
+            if self.game.keyboard.is_down(KeyboardAction.MOVE_UP):
                 move_x += fx
                 move_z += fz
-            if rl.is_key_down(rl.KeyboardKey.KEY_S):
+            if self.game.keyboard.is_down(KeyboardAction.MOVE_DOWN):
                 move_x -= fx
                 move_z -= fz
-            if rl.is_key_down(rl.KeyboardKey.KEY_A):
+            if self.game.keyboard.is_down(KeyboardAction.MOVE_LEFT):
                 move_x += rx
                 move_z += rz
-            if rl.is_key_down(rl.KeyboardKey.KEY_D):
+            if self.game.keyboard.is_down(KeyboardAction.MOVE_RIGHT):
                 move_x -= rx
                 move_z -= rz
         else:

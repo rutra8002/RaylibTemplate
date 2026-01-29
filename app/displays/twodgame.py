@@ -2,6 +2,7 @@ import pyray as rl
 from app.displays.base import BaseDisplay
 from app.cameras import twodcamera
 from app.displays.pause import PauseDisplay
+from app.input import KeyboardAction
 
 
 class TwoDGameDisplay(BaseDisplay):
@@ -53,7 +54,7 @@ class TwoDGameDisplay(BaseDisplay):
 
 
     def update(self):
-        if rl.is_key_pressed(rl.KeyboardKey.KEY_ESCAPE):
+        if self.game.keyboard.is_pressed(KeyboardAction.PAUSE):
             self.game.change_display(PauseDisplay(self.game, self))
             return
 
@@ -65,13 +66,13 @@ class TwoDGameDisplay(BaseDisplay):
                             rl.ShaderUniformDataType.SHADER_UNIFORM_FLOAT)
 
         if not self.game.gamepad_enabled:
-            if rl.is_key_down(rl.KeyboardKey.KEY_W):
+            if self.game.keyboard.is_down(KeyboardAction.MOVE_UP):
                 self.square_pos[1] -= self.speed * self.delta_time
-            if rl.is_key_down(rl.KeyboardKey.KEY_S):
+            if self.game.keyboard.is_down(KeyboardAction.MOVE_DOWN):
                 self.square_pos[1] += self.speed * self.delta_time
-            if rl.is_key_down(rl.KeyboardKey.KEY_A):
+            if self.game.keyboard.is_down(KeyboardAction.MOVE_LEFT):
                 self.square_pos[0] -= self.speed * self.delta_time
-            if rl.is_key_down(rl.KeyboardKey.KEY_D):
+            if self.game.keyboard.is_down(KeyboardAction.MOVE_RIGHT):
                 self.square_pos[0] += self.speed * self.delta_time
         else:
             self.square_pos[0] += self.game.left_joystick_x * self.speed * self.delta_time

@@ -1,6 +1,7 @@
 import pyray as rl
 
 from app.displays import startscreen, twodgame, threedgame
+from app.input.keyboard import KeyboardManager
 
 
 class Game:
@@ -13,6 +14,8 @@ class Game:
         self.twodgame = twodgame.TwoDGameDisplay(self)
         self.threedgame = threedgame.ThreeDGameDisplay(self)
         self.current_display = self.base_display
+
+        self.keyboard = KeyboardManager()
 
         # controller
         self.gamepad_id = 0
@@ -48,6 +51,7 @@ class Game:
     def update(self):
         self.update_gamepad_status()
         self.update_joystick()
+        self.keyboard.update()
         self.current_display.update()
 
     def update_joystick(self):

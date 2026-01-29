@@ -1,6 +1,7 @@
 import pyray as rl
 from app.displays.base import BaseDisplay
 from app.ui import button
+from app.input import KeyboardAction
 
 
 class PauseDisplay(BaseDisplay):
@@ -60,7 +61,7 @@ class PauseDisplay(BaseDisplay):
             b.draw()
 
     def update(self):
-        if rl.is_key_pressed(rl.KeyboardKey.KEY_ESCAPE):
+        if self.game.keyboard.is_pressed(KeyboardAction.PAUSE):
             self._resume_previous()
             return
 
