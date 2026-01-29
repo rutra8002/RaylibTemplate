@@ -59,7 +59,7 @@ class TwoDGameDisplay(BaseDisplay):
             return
 
         self.delta_time = rl.get_frame_time()
-        self.camera.update_target(self.square_pos[0], self.square_pos[1], self.delta_time)
+        self.camera.update_target(self.square_pos[0]+10, self.square_pos[1]+10, self.delta_time)
 
         t = rl.ffi.new("float *", float(rl.get_time()))
         rl.set_shader_value(self.bloom_shader, self.shader_time_location, t,
