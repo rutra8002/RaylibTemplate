@@ -2,6 +2,7 @@ import pyray as rl
 from app.displays.base import BaseDisplay
 from app.displays.settings import SettingsDisplay
 from app.ui import button
+from app.ui import menu
 class StartDisplay(BaseDisplay):
 
     def __init__(self, game):
@@ -10,7 +11,7 @@ class StartDisplay(BaseDisplay):
         self.button_to_3dgame = button.Button(self.game, 200, 190, 140, 80, "3D Game", 20, rl.WHITE, rl.GRAY, rl.GREEN, rl.RED)
         self.button_to_settings = button.Button(self.game, 200, 300, 140, 80, "Settings", 20, rl.WHITE, rl.GRAY, rl.GREEN, rl.RED)
         self.buttons = [self.button_to_2dgame, self.button_to_3dgame, self.button_to_settings]
-        self.focus_index = 0
+        self.menu = menu.MenuController(self.game, self.buttons)
 
     def render(self):
         super().render()
@@ -19,16 +20,7 @@ class StartDisplay(BaseDisplay):
             b.draw()
 
     def update(self):
-        if self.game.gamepad_enabled:
-            y = getattr(self.game, "left_joystick_y", 0.0)
-            if y < -self.game.gamepad_deadzone:
-                self.focus_index = max(0, self.focus_index - 1)
-            elif y > self.game.gamepad_deadzone:
-                self.focus_index = min(len(self.buttons) - 1, self.focus_index + 1)
-        else:
-            self.focus_index = -1
-        for i, b in enumerate(self.buttons):
-            b.update(focused=(i == self.focus_index))
+        self.menu.update()
         if self.button_to_3dgame.is_clicked:
             self.game.change_display(self.game.threedgame)
         if self.button_to_2dgame.is_clicked:

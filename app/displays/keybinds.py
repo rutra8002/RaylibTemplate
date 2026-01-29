@@ -2,6 +2,7 @@ import pyray as rl
 from app.displays.base import BaseDisplay
 from app.input import KeyboardAction
 from app.ui import button
+from app.ui import menu
 
 
 class KeybindsDisplay(BaseDisplay):
@@ -13,8 +14,8 @@ class KeybindsDisplay(BaseDisplay):
         self.pending_action = None
         self.action_buttons = self._create_action_buttons()
         self.back_button = self._create_back_button()
-        self.buttons = self.action_buttons + [self.back_button]
-        self.focus_index = 0
+        self.focus_buttons = [btn for _, btn in self.action_buttons] + [self.back_button]
+        self.menu = menu.MenuController(self.game, self.focus_buttons)
 
     def _create_action_buttons(self):
         bw, bh = 360, 50
@@ -89,18 +90,7 @@ class KeybindsDisplay(BaseDisplay):
                 self.pending_action = None
             return
 
-        if self.game.gamepad_enabled:
-            y = getattr(self.game, "left_joystick_y", 0.0)
-            if y < -self.game.gamepad_deadzone:
-                self.focus_index = max(0, self.focus_index - 1)
-            elif y > self.game.gamepad_deadzone:
-                self.focus_index = min(len(self.buttons) - 1, self.focus_index + 1)
-        else:
-            self.focus_index = -1
-
-        for i, entry in enumerate(self.buttons):
-            btn = entry[1] if isinstance(entry, tuple) else entry
-            btn.update(focused=(i == self.focus_index))
+        self.menu.update()
 
         for action, btn in self.action_buttons:
             if btn.is_clicked:
