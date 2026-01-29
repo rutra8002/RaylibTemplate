@@ -15,7 +15,7 @@ class AudioManager:
         self.current_music = None
         self.current_music_id = None
         self.current_music_path = None
-        self.audio_dir = Path(__file__).resolve().parent / "assets/audio"
+        self.audio_dir = Path(__file__).resolve().parent.parent / "assets/audio"
         self.AudioId, self._id_to_path = self._build_audio_enum()
         self._path_to_id = {str(path): audio_id for audio_id, path in self._id_to_path.items()}
         self.music = {}

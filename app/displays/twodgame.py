@@ -2,7 +2,7 @@ import pyray as rl
 from app.displays.base import BaseDisplay
 from app.cameras import twodcamera
 from app.displays.pause import PauseDisplay
-from app.input import KeyboardAction
+from app.managers import KeyboardAction
 
 
 class TwoDGameDisplay(BaseDisplay):

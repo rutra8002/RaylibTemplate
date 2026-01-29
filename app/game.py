@@ -1,11 +1,7 @@
 import pyray as rl
 
 from app.displays import startscreen, twodgame, threedgame
-from app.input.keyboard import KeyboardManager, KeyboardAction
-from app.audio_manager import AudioManager
-from app.shader_manager import ShaderManager
-from app.model_manager import ModelManager
-from app.texture_manager import TextureManager
+from app.managers import KeyboardManager, KeyboardAction, AudioManager, ShaderManager, ModelManager, TextureManager
 
 
 class Game:

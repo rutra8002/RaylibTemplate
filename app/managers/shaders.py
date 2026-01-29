@@ -8,7 +8,7 @@ class ShaderManager:
     SHADER_EXTS = {".fs", ".vs"}
 
     def __init__(self):
-        self.assets_dir = Path(__file__).resolve().parent / "assets/shaders"
+        self.assets_dir = Path(__file__).resolve().parent.parent / "assets/shaders"
         self.ShaderId, self._id_to_paths = self._build_enum()
         self.shaders = {}
         self._load_assets()

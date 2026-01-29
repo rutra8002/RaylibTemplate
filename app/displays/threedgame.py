@@ -3,7 +3,7 @@ import pyray as rl
 from app.displays.base import BaseDisplay
 from app.cameras import threedcamera
 from app.displays.pause import PauseDisplay
-from app.input import KeyboardAction
+from app.managers import KeyboardAction
 
 
 class ThreeDGameDisplay(BaseDisplay):

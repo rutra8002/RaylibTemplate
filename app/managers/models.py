@@ -8,7 +8,7 @@ class ModelManager:
     MODEL_EXTS = {".obj", ".gltf", ".glb", ".iqm", ".vox", ".m3d"}
 
     def __init__(self):
-        self.assets_dir = Path(__file__).resolve().parent / "assets/models"
+        self.assets_dir = Path(__file__).resolve().parent.parent / "assets/models"
         self.ModelId, self._id_to_path = self._build_enum()
         self.models = {}
         self._load_assets()

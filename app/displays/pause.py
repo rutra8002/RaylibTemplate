@@ -3,7 +3,7 @@ from app.displays.base import BaseDisplay
 from app.displays.settings import SettingsDisplay
 from app.ui import button
 from app.ui import menu
-from app.input import KeyboardAction
+from app.managers import KeyboardAction
 
 
 class PauseDisplay(BaseDisplay):

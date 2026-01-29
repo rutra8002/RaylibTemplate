@@ -8,7 +8,7 @@ class TextureManager:
     TEXTURE_EXTS = {".png", ".jpg", ".jpeg", ".tga", ".bmp", ".gif", ".pic", ".psd"}
 
     def __init__(self):
-        self.assets_dir = Path(__file__).resolve().parent / "assets/textures"
+        self.assets_dir = Path(__file__).resolve().parent.parent / "assets/textures"
         self.TextureId, self._id_to_path = self._build_enum()
         self.textures = {}
         self._load_assets()
