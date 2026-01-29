@@ -18,10 +18,17 @@ class Game:
         self.gamepad_id = 0
         self.gamepad_deadzone = 0.25
         self.gamepad_enabled = False
+        self.gamepad_name = ""
+        self.gamepad_name_blacklist = ("touchpad")
 
     def update_gamepad_status(self):
         # Detect availability each frame (hot-plug support)
-        self.gamepad_enabled = rl.is_gamepad_available(self.gamepad_id)
+        available = rl.is_gamepad_available(self.gamepad_id)
+        name = rl.get_gamepad_name(self.gamepad_id) if available else ""
+        self.gamepad_name = name or ""
+        lowered = self.gamepad_name.lower()
+        is_blacklisted = any(token in lowered for token in self.gamepad_name_blacklist)
+        self.gamepad_enabled = available and not is_blacklisted
 
     def change_display(self, display):
         self.current_display = display
