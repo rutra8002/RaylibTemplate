@@ -3,6 +3,9 @@ import pyray as rl
 from app.displays import startscreen, twodgame, threedgame
 from app.input.keyboard import KeyboardManager, KeyboardAction
 from app.audio_manager import AudioManager
+from app.shader_manager import ShaderManager
+from app.model_manager import ModelManager
+from app.texture_manager import TextureManager
 
 
 class Game:
@@ -12,7 +15,13 @@ class Game:
         rl.set_exit_key(rl.KeyboardKey.KEY_NULL)
         rl.init_audio_device()
         self.audio = AudioManager()
-        self.bloom_shader = rl.load_shader("", "app/assets/shaders/bloom.fs")
+
+        self.shader_manager = ShaderManager()
+        self.model_manager = ModelManager()
+        self.texture_manager = TextureManager()
+
+        self.bloom_shader = self.shader_manager.get_shader(self.shader_manager.ShaderId.BLOOM)
+
         self.base_display = startscreen.StartDisplay(self)
         self.twodgame = twodgame.TwoDGameDisplay(self)
         self.threedgame = threedgame.ThreeDGameDisplay(self)
