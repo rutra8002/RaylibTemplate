@@ -1,6 +1,7 @@
 import pyray as rl
 from app.displays.base import BaseDisplay
 from app.cameras import twodcamera
+from app.displays.pause import PauseDisplay
 
 
 class TwoDGameDisplay(BaseDisplay):
@@ -52,6 +53,10 @@ class TwoDGameDisplay(BaseDisplay):
 
 
     def update(self):
+        if rl.is_key_pressed(rl.KeyboardKey.KEY_ESCAPE):
+            self.game.change_display(PauseDisplay(self.game, self))
+            return
+
         self.delta_time = rl.get_frame_time()
         self.camera.update_target(self.square_pos[0], self.square_pos[1], self.delta_time)
 
@@ -71,5 +76,3 @@ class TwoDGameDisplay(BaseDisplay):
         else:
             self.square_pos[0] += self.game.left_joystick_x * self.speed * self.delta_time
             self.square_pos[1] += self.game.left_joystick_y * self.speed * self.delta_time
-
-

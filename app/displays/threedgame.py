@@ -1,9 +1,8 @@
-# python
-# file: `app/displays/threedgame.py`
 import math
 import pyray as rl
 from app.displays.base import BaseDisplay
 from app.cameras import threedcamera
+from app.displays.pause import PauseDisplay
 
 
 class ThreeDGameDisplay(BaseDisplay):
@@ -56,6 +55,10 @@ class ThreeDGameDisplay(BaseDisplay):
         rl.enable_cursor()
 
     def update(self):
+        if rl.is_key_pressed(rl.KeyboardKey.KEY_ESCAPE):
+            self.game.change_display(PauseDisplay(self.game, self))
+            return
+
         self.update_cursor()
         self.delta_time = rl.get_frame_time()
         self.update_look()
@@ -172,4 +175,3 @@ class ThreeDGameDisplay(BaseDisplay):
         if self.game.gamepad_enabled:
             rl.draw_text(f"Gamepad X: {self.game.left_joystick_x:.2f}  Y: {self.game.left_joystick_y:.2f}", 10, 130, 20,
                          rl.YELLOW)
-
