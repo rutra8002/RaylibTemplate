@@ -13,17 +13,25 @@ class KeyboardAction(Enum):
 class KeyboardManager:
     def __init__(self):
         self.actions = {
-            KeyboardAction.MOVE_UP: [rl.KeyboardKey.KEY_W, rl.KeyboardKey.KEY_UP],
-            KeyboardAction.MOVE_DOWN: [rl.KeyboardKey.KEY_S, rl.KeyboardKey.KEY_DOWN],
-            KeyboardAction.MOVE_LEFT: [rl.KeyboardKey.KEY_A, rl.KeyboardKey.KEY_LEFT],
-            KeyboardAction.MOVE_RIGHT: [rl.KeyboardKey.KEY_D, rl.KeyboardKey.KEY_RIGHT],
-            KeyboardAction.PAUSE: [rl.KeyboardKey.KEY_ESCAPE],
+            KeyboardAction.MOVE_UP: rl.KeyboardKey.KEY_W,
+            KeyboardAction.MOVE_DOWN: rl.KeyboardKey.KEY_S,
+            KeyboardAction.MOVE_LEFT: rl.KeyboardKey.KEY_A,
+            KeyboardAction.MOVE_RIGHT: rl.KeyboardKey.KEY_D,
+            KeyboardAction.PAUSE: rl.KeyboardKey.KEY_ESCAPE,
         }
+        self.action_order = [
+            KeyboardAction.MOVE_UP,
+            KeyboardAction.MOVE_DOWN,
+            KeyboardAction.MOVE_LEFT,
+            KeyboardAction.MOVE_RIGHT,
+            KeyboardAction.PAUSE,
+        ]
         self.keys = {
             name: getattr(rl.KeyboardKey, name)
             for name in dir(rl.KeyboardKey)
             if name.startswith("KEY_")
         }
+        self.key_names_by_code = {value: name.replace("KEY_", "") for name, value in self.keys.items()}
         self.last_pressed = []
 
     def update(self):
@@ -35,14 +43,28 @@ class KeyboardManager:
                 break
             self.last_pressed.append(key)
 
-    def bind(self, action, *keys):
-        self.actions[action] = list(keys)
+    def bind(self, action, key):
+        self.actions[action] = key
+
+    def get_binding(self, action):
+        return self.actions.get(action)
+
+    def get_key_name(self, key):
+        return self.key_names_by_code.get(key, str(key))
+
+    def format_binding(self, action):
+        key = self.get_binding(action)
+        if key is None:
+            return "Unbound"
+        return self.get_key_name(key)
 
     def is_down(self, action):
-        return any(rl.is_key_down(k) for k in self.actions.get(action, []))
+        key = self.actions.get(action)
+        return rl.is_key_down(key) if key is not None else False
 
     def is_pressed(self, action):
-        return any(rl.is_key_pressed(k) for k in self.actions.get(action, []))
+        key = self.actions.get(action)
+        return rl.is_key_pressed(key) if key is not None else False
 
     def is_key_down(self, key_name):
         key = self.keys.get(key_name)
