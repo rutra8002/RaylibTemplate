@@ -8,6 +8,7 @@ class KeyboardAction(Enum):
     MOVE_LEFT = "move_left"
     MOVE_RIGHT = "move_right"
     PAUSE = "pause"
+    DEBUG_TOGGLE = "debug_toggle"
 
 
 class KeyboardManager:
@@ -18,6 +19,7 @@ class KeyboardManager:
             KeyboardAction.MOVE_LEFT: rl.KeyboardKey.KEY_A,
             KeyboardAction.MOVE_RIGHT: rl.KeyboardKey.KEY_D,
             KeyboardAction.PAUSE: rl.KeyboardKey.KEY_ESCAPE,
+            KeyboardAction.DEBUG_TOGGLE: rl.KeyboardKey.KEY_BACKSLASH,
         }
         self.action_order = [
             KeyboardAction.MOVE_UP,
@@ -25,6 +27,7 @@ class KeyboardManager:
             KeyboardAction.MOVE_LEFT,
             KeyboardAction.MOVE_RIGHT,
             KeyboardAction.PAUSE,
+            KeyboardAction.DEBUG_TOGGLE,
         ]
         self.keys = {
             name: getattr(rl.KeyboardKey, name)

@@ -1,7 +1,7 @@
 import pyray as rl
 
 from app.displays import startscreen, twodgame, threedgame
-from app.input.keyboard import KeyboardManager
+from app.input.keyboard import KeyboardManager, KeyboardAction
 from app.audio_manager import AudioManager
 
 
@@ -18,6 +18,7 @@ class Game:
         self.threedgame = threedgame.ThreeDGameDisplay(self)
         self.current_display = self.base_display
         self.current_display.on_enter()
+        self.debug_enabled = False
 
         self.keyboard = KeyboardManager()
 
@@ -53,6 +54,8 @@ class Game:
     def render(self):
         rl.begin_drawing()
         self.current_display.render()
+        if self.debug_enabled:
+            self._draw_debug_overlay()
         #debug thingy
         rl.draw_text(str(self.current_display), 10, 100, 20, rl.WHITE)
         rl.end_drawing()
@@ -61,6 +64,8 @@ class Game:
         self.update_gamepad_status()
         self.update_joystick()
         self.keyboard.update()
+        if self.keyboard.is_pressed(KeyboardAction.DEBUG_TOGGLE):
+            self.debug_enabled = not self.debug_enabled
         self.audio.update()
         self.current_display.update()
 
@@ -78,3 +83,23 @@ class Game:
                 self.right_joystick_x = 0.0
             if abs(self.right_joystick_y) < self.gamepad_deadzone:
                 self.right_joystick_y = 0.0
+
+    def _format_debug_value(self, value):
+        if isinstance(value, (int, float, str, bool, type(None))):
+            return repr(value)
+        text = repr(value)
+        if len(text) > 80:
+            text = f"{text[:77]}..."
+        return text
+
+    def _draw_debug_overlay(self):
+        display = self.current_display
+        lines = [f"Display: {display.__class__.__name__}"]
+        for key in sorted(vars(display)):
+            value = self._format_debug_value(getattr(display, key))
+            lines.append(f"{key} = {value}")
+        x, y = 10, 10
+        size = 16
+        for line in lines:
+            rl.draw_text(line, x, y, size, rl.YELLOW)
+            y += size + 4
